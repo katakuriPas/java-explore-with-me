@@ -1,14 +1,65 @@
+version: '3.8'
+
 services:
+
+  # --- Сервер статистики ---
   stats-server:
+    build:
+      context: .
+      dockerfile: stats-service-parent/stats-server/Dockerfile
+    container_name: stats-server
     ports:
       - "9090:9090"
+    depends_on:
+      - stats-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats_db
+      - SPRING_DATASOURCE_USERNAME=stats_user
+      - SPRING_DATASOURCE_PASSWORD=stats_password
 
+  # --- База данных для сервиса статистики ---
   stats-db:
     image: postgres:16.1
+    container_name: stats-db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=stats_db
+      - POSTGRES_USER=stats_user
+      - POSTGRES_PASSWORD=stats_password
+    volumes:
+      - stats_db_data:/var/lib/postgresql/data
 
+  # --- Основной сервис EWM ---
   ewm-service:
+    build:
+      context: .
+      dockerfile: main-service/Dockerfile
+    container_name: ewm-service
     ports:
       - "8080:8080"
+    depends_on:
+      - ewm-db
+      - stats-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm_db
+      - SPRING_DATASOURCE_USERNAME=ewm_user
+      - SPRING_DATASOURCE_PASSWORD=ewm_password
+      - STATS_SERVER_URL=http://stats-server:9090
 
+  # --- База данных для EWM ---
   ewm-db:
     image: postgres:16.1
+    container_name: ewm-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=ewm_db
+      - POSTGRES_USER=ewm_user
+      - POSTGRES_PASSWORD=ewm_password
+    volumes:
+      - ewm_db_data:/var/lib/postgresql/data
+
+volumes:
+  stats_db_data:
+  ewm_db_data:
