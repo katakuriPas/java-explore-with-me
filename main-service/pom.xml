@@ -9,7 +9,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <!-- ИСПРАВЛЕНО:artifactId теперь совпадает с именем папки микросервиса -->
     <artifactId>main-service</artifactId>
 
     <properties>
@@ -50,8 +49,14 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.34</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- MapStruct основная зависимость -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.3</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -65,10 +70,23 @@
                     <source>21</source>
                     <target>21</target>
                     <annotationProcessorPaths>
+                        <!-- ПЕРВЫМ идет Lombok -->
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>1.18.34</version>
+                        </path>
+                        <!-- КРИТИЧЕСКИЙ МОСТ: связывает Lombok и MapStruct -->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                        <!-- ТРЕТЬИМ идет MapStruct -->
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>1.6.3</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

@@ -19,7 +19,7 @@ public class BaseClient {
     }
 
     protected <T> ResponseEntity<Object> get(String path, Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.POST, path, parameters, null);
+        return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }
 
     /*
