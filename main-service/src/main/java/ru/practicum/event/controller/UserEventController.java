@@ -1,5 +1,7 @@
 package ru.practicum.event.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,7 +28,7 @@ public class UserEventController {
     // --- POST ------------------------------------------------
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EventFullDto createEvent(@RequestBody NewEventDto newEventDto,
+    public EventFullDto createEvent(@Valid @RequestBody NewEventDto newEventDto,
                                     @PathVariable Long userId) {
         log.info("PostMapping: createEvent (newEventDto: {}, userId: {})", newEventDto, userId);
 
@@ -38,19 +40,21 @@ public class UserEventController {
     public List<EventShortDto> getEvetByUserFromAndSize(
             @PathVariable Long userId,
             @RequestParam(name = "from", defaultValue = "0") Long from,
-            @RequestParam(name = "size", defaultValue = "10") Long size
+            @RequestParam(name = "size", defaultValue = "10") Long size,
+            HttpServletRequest request
     ) {
-        log.info("GetMapping: getEvetByUserFromAndSize userId = {}, from = {}, size = {})", userId, from, size);
-        return userEventService.getEvetByUserFromAndSize(userId, from, size);
+        log.info("GetMapping: getEvetByUserFromAndSize userId = {}, from = {}, size = {}, request = {})", userId, from, size, request);
+        return userEventService.getEvetByUserFromAndSize(userId, from, size, request);
     }
 
     @GetMapping("/{eventId}")
     public EventFullDto getEvetByUser(
             @PathVariable Long userId,
-            @PathVariable Long eventId
+            @PathVariable Long eventId,
+            HttpServletRequest request
     ) {
-        log.info("GetMapping: getEvetByUser userId = {}, eventId = {})", userId, eventId);
-        return userEventService.getEvetByUser(userId, eventId);
+        log.info("GetMapping: getEvetByUser userId = {}, eventId = {}, request = {})", userId, eventId, request);
+        return userEventService.getEvetByUser(userId, eventId, request);
     }
 
     @GetMapping("/{eventId}/requests")
@@ -67,7 +71,7 @@ public class UserEventController {
     public EventFullDto updateEvent(
             @PathVariable Long userId,
             @PathVariable Long eventId,
-            @RequestBody UpdateEventUserRequest updateEvent) {
+            @Valid @RequestBody UpdateEventUserRequest updateEvent) {
         log.info("@PatchMapping: " +
                 "updateEvent userId = {}, " +
                 "eventId = {}, " +

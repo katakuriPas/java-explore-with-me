@@ -1,7 +1,6 @@
 package ru.practicum.event.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -42,7 +41,6 @@ public class UpdateEventUserRequest {
 
     private String stateAction; // (ENUM: SEND_TO_REVIEW, CANCEL_REVIEW) Изменение состояния события
 
-    @NotBlank
     @Size(min = 3, max = 120)
     private String title; // Заголовок
 }

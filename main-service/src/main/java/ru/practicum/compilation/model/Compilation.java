@@ -30,6 +30,6 @@ public class Compilation {
     @Column(name = "pinned")
     private Boolean pinned;
 
-    @Column(name = "title")
+    @Column(name = "title", length = 50, nullable = false)
     private String title;
 }

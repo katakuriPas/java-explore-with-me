@@ -20,7 +20,7 @@ public class UserService {
     private final UserMapper userMapper;
 
     public UserDto createUser(NewUserRequest newUserRequest) {
-        User user = userMapper.toEntityByShort(newUserRequest);
+        User user = userMapper.toEntity(newUserRequest);
 
         if (userRepository.existsByEmail(user.getEmail())) {
             log.warn("Email '{}' уже используется", user.getEmail());

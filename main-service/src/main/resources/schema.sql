@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     CONSTRAINT pk_user PRIMARY KEY (id),
-    CONSTRAINT uq_user_email UNIQUE (email)
+    CONSTRAINT uq_user_email UNIQUE (email),
+    CONSTRAINT uq_user_name UNIQUE (name)
 );
 
 CREATE TABLE IF NOT EXISTS categories (

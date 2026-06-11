@@ -11,5 +11,5 @@ public interface UserMapper {
     UserDto toFullDtoEntity(User user);
 
     @Mapping(target = "id", ignore = true)
-    User toEntityByShort(NewUserRequest newUserRequest);
+    User toEntity(NewUserRequest newUserRequest);
 }

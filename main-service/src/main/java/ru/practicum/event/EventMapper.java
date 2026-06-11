@@ -66,9 +66,7 @@ public abstract class EventMapper {
         statsManager.enrichWithViews(dtos, events);
     }
 
-
-    // Написание target = "." указывает MapStruct:
-    // "Применить эту стратегию игнорирования null ко всем свойствам внутри Event target".
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "location", ignore = true)
@@ -78,8 +76,6 @@ public abstract class EventMapper {
     @Mapping(target = "publishedOn", ignore = true)
     @Mapping(target = "state",
             expression = "java(mapStateAction(updateEvent.getStateAction(), eventTarget.getState()))")
-    @Mapping(target = ".", source = "updateEvent",
-            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     public abstract void updateEvent(UpdateEventUserRequest updateEvent, @MappingTarget Event eventTarget);
 
     EventState mapStateAction(String stateAction, EventState currentState) {
@@ -94,6 +90,7 @@ public abstract class EventMapper {
         };
     }
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "location", ignore = true)
@@ -103,8 +100,6 @@ public abstract class EventMapper {
     @Mapping(target = "publishedOn", ignore = true)
     @Mapping(target = "state",
             expression = "java(mapAdminStateAction(updateAdminEvent.getStateAction(), eventTarget.getState()))")
-    @Mapping(target = ".", source = "updateAdminEvent",
-            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     public abstract void updateEventAdmin(UpdateEventAdminRequest updateAdminEvent, @MappingTarget Event eventTarget);
 
     EventState mapAdminStateAction(String stateAction, EventState currentState) {

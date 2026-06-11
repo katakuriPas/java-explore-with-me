@@ -1,5 +1,6 @@
 package ru.practicum.compilation.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class AdminCompilationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto createCompilation(@RequestBody NewCompilationDto compilationDto) {
+    public CompilationDto createCompilation(@Valid @RequestBody NewCompilationDto compilationDto) {
         log.info("PostMapping: createCompilation compilationDto = {}", compilationDto);
 
         return compilationService.createCompilation(compilationDto);
@@ -36,7 +37,7 @@ public class AdminCompilationController {
     @PatchMapping("/{compId}")
     public CompilationDto updateCompilationById(
             @PathVariable Long compId,
-            @RequestBody UpdateCompilationRequest updateComp) {
+            @Valid @RequestBody UpdateCompilationRequest updateComp) {
         log.info("DeleteMapping: updateCompilationById compId = {}, UpdateCompilationRequest = {}",
                 compId, updateComp);
 

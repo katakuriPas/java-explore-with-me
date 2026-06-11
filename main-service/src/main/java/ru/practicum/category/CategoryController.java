@@ -1,5 +1,6 @@
 package ru.practicum.category;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class CategoryController {
     // --- POST ---
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto createCategory(@RequestBody NewCategoryDto newDto) {
+    public CategoryDto createCategory(@Valid @RequestBody NewCategoryDto newDto) {
         log.info("PostMapping: createCategory NewCategoryDto = {}", newDto);
         return categoryService.createCategory(newDto);
     }
@@ -55,7 +56,8 @@ public class CategoryController {
 
     // --- PATCH ---
     @PatchMapping("/{catId}")
-    public CategoryDto patchCategory(@PathVariable Long catId, @RequestBody CategoryDto dto) {
+    public CategoryDto patchCategory(@PathVariable Long catId,
+                                     @Valid @RequestBody CategoryDto dto) {
         log.info("PatchMapping(\"/{catId}\"): patchCategory catId = {}, dto = {}", catId, dto);
         return categoryService.patchCategory(catId, dto);
     }

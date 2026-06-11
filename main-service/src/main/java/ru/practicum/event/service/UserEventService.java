@@ -1,5 +1,6 @@
 package ru.practicum.event.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import ru.practicum.request.model.EventRequestStatusUpdateResult;
 import ru.practicum.request.model.Request;
 import ru.practicum.request.RequestMapper;
 import ru.practicum.request.RequestRepository;
+import ru.practicum.stats.StatsManager;
 import ru.practicum.user.User;
 import ru.practicum.user.UserService;
 
@@ -38,6 +40,8 @@ import java.util.List;
 public class UserEventService {
     private static final String EVENT_NOT_FOUND = "Event with id=%d was not found";
 
+    private final StatsManager statsManager;
+
     private final EventRepository eventRepository;
     private final LocationRepository locationRepository;
     private final RequestRepository requestRepository;
@@ -49,6 +53,12 @@ public class UserEventService {
     private final RequestMapper requestMapper;
 
     public EventFullDto createEvent(NewEventDto newEventDto, Long userId) {
+        if (newEventDto.getEventDate() != null
+                && newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            throw new BadRequestException(
+                    "The date and time of the scheduled event cannot be earlier than two hours from the current moment");
+        }
+
         User initiator = userService.getUserById(userId);
         Category category = categoryService.getCategoryById(newEventDto.getCategory());
         Location location = locationRepository.save(newEventDto.getLocation());
@@ -59,20 +69,24 @@ public class UserEventService {
         return eventMapper.toEventFullDto(savedEvent);
     }
 
-    public List<EventShortDto> getEvetByUserFromAndSize(Long userId, Long from, Long size) {
+    public List<EventShortDto> getEvetByUserFromAndSize(Long userId, Long from, Long size, HttpServletRequest request) {
         userService.getUserById(userId);
 
         List<Event> events = eventRepository.getEvetByUserFromAndSize(userId, from, size);
+
+        statsManager.sendHit(request);
 
         return events.stream()
                 .map(eventMapper::toEventShortDto)
                 .toList();
     }
 
-    public EventFullDto getEvetByUser(Long userId, Long eventId) {
+    public EventFullDto getEvetByUser(Long userId, Long eventId, HttpServletRequest request) {
         userService.getUserById(userId);
 
         Event event = eventRepository.getEvetByUser(userId, eventId);
+
+        statsManager.sendHit(request);
 
         return eventMapper.toEventFullDto(event);
     }

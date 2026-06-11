@@ -2,10 +2,10 @@ package ru.practicum.category;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.NewCategoryDto;
-import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class CategoryService {
         Category category = mapping.toEntity(newDto);
         if (repository.existsByName(category.getName())) {
             log.warn("The name '{}' is already in use", category.getName());
-            throw new ConflictException("The name is already in use");
+            throw new DataIntegrityViolationException("The name is already in use");
         }
 
         Category categorySave = repository.save(category);

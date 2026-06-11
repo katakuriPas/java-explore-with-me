@@ -2,11 +2,11 @@ package ru.practicum.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.practicum.event.EventRepository;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.enumState.EventState;
-import ru.practicum.exception.BadRequestException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.request.model.Request;
 import ru.practicum.user.User;
@@ -44,7 +44,7 @@ public class RequestService {
             log.error("RequestService: createRequest(Long userId = {}, Long eventId = {}) " +
                     "- You cannot add a duplicate request.", userId, eventId);
 
-            throw new BadRequestException("You cannot add a duplicate request.");
+            throw new DataIntegrityViolationException("You cannot add a duplicate request.");
         }
 
         // инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
@@ -52,7 +52,7 @@ public class RequestService {
             log.error("RequestService: createRequest(Long userId = {}, Long eventId = {}) " +
                     "- The event initiator cannot add a request to participate in their event.", userId, eventId);
 
-            throw new BadRequestException("The event initiator cannot add a request to participate in their event.");
+            throw new DataIntegrityViolationException("The event initiator cannot add a request to participate in their event.");
         }
 
         // нельзя участвовать в неопубликованном событии (Ожидается код ошибки 409)
@@ -60,7 +60,7 @@ public class RequestService {
             log.error("RequestService: createRequest(Long userId = {}, Long eventId = {}) " +
                     "- You cannot participate in an unpublished event.", userId, eventId);
 
-            throw new BadRequestException("You cannot participate in an unpublished event.");
+            throw new DataIntegrityViolationException("You cannot participate in an unpublished event.");
         }
 
         // если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
@@ -68,7 +68,7 @@ public class RequestService {
             log.error("RequestService: createRequest(Long userId = {}, Long eventId = {}) " +
                     "- The participation request limit has been reached", userId, eventId);
 
-            throw new BadRequestException("The participation request limit has been reached");
+            throw new DataIntegrityViolationException("The participation request limit has been reached");
         }
 
         Request newRequest = new Request();
@@ -78,7 +78,7 @@ public class RequestService {
 
         // если для события отключена пре-модерация запросов на участие,
         // то запрос должен автоматически перейти в состояние подтвержденного
-        if (!existingEvent.getRequestModeration()) {
+        if (!existingEvent.getRequestModeration() || existingEvent.getParticipantLimit() == 0) {
             newRequest.setStatus(RequestStatus.CONFIRMED);
         } else newRequest.setStatus(RequestStatus.PENDING);
 

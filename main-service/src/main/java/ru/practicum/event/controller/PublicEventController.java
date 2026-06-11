@@ -50,7 +50,6 @@ public class PublicEventController {
                         "from = {}, size = {}",
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
 
-        // Передаем request в сервис
         return publicEventService.getEventsWithFilter(
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
     }
