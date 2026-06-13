@@ -13,9 +13,9 @@ import ru.practicum.event.dto.EventShortDto;
 @NoArgsConstructor
 public class CompilationDto {
 
-    private List<EventShortDto> events;
-
     private Long id;
+
+    private List<EventShortDto> events;
 
     private Boolean pinned;
 

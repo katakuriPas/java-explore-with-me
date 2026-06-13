@@ -90,7 +90,7 @@ public class StatsManager {
                     minPublished.format(formatter),
                     LocalDateTime.now().plusSeconds(1).format(formatter),
                     uris,
-                    false
+                    true
             );
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {

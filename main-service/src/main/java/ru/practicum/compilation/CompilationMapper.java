@@ -18,10 +18,13 @@ public abstract class CompilationMapper {
     @Autowired
     protected EventRepository eventRepository;
 
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "events", source = "events")
+    @Mapping(target = "title", source = "title")
+    @Mapping(target = "pinned", source = "pinned")
     public abstract CompilationDto toCompilationDto(Compilation compilation);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "events", ignore = true)
     public abstract Compilation toCompilation(NewCompilationDto newDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

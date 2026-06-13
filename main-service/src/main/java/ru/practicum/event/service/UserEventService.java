@@ -162,20 +162,20 @@ public class UserEventService {
 
         //  менять может только автор мероприятия
         if (existingEvent.getInitiator() != existingUser) {
-            throw new ConflictException("You are not the initiator of this event");
+            throw new DataIntegrityViolationException("You are not the initiator of this event");
         }
 
         //  если для события лимит заявок равен 0 или отключена пре-модерация заявок,
         //  то подтверждение заявок не требуется
         if (existingEvent.getParticipantLimit() == 0 || !existingEvent.getRequestModeration()) {
-            throw new ConflictException("This event does not require confirmation");
+            throw new DataIntegrityViolationException("This event does not require confirmation");
         }
 
         //  нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
         if (existingEvent.getParticipantLimit() <= existingEvent.getConfirmedRequests()) {
             log.info("existingEvent = {}, existingEvent.getParticipantLimit() = {}, existingEvent.getConfirmedRequests() = {}",
                     existingEvent, existingEvent.getParticipantLimit(), existingEvent.getConfirmedRequests());
-            throw new ConflictException("The participant limit has been reached");
+            throw new DataIntegrityViolationException("The participant limit has been reached");
         }
 
         List<Request> requestsList = requestRepository.findAllById(eventRequestStatusUpdateRequest.getRequestIds());

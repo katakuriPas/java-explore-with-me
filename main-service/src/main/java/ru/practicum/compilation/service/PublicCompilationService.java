@@ -28,9 +28,7 @@ public class PublicCompilationService {
         Compilation comp = compRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException(COMPILATION_NOT_FOUND.formatted(compId)));
 
-        CompilationDto compDto = compMapper.toCompilationDto(comp);
-
-        return compDto;
+        return compMapper.toCompilationDto(comp);
     }
 
     public List<CompilationDto> getCompilations() {
