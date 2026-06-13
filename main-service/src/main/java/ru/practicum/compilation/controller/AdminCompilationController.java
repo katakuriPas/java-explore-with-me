@@ -21,7 +21,7 @@ public class AdminCompilationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto createCompilation(@Valid @RequestBody NewCompilationDto compilationDto) {
-        log.info("PostMapping: createCompilation compilationDto = {}", compilationDto);
+        log.info("@PostMapping: createCompilation compilationDto = {}", compilationDto);
 
         return compilationService.createCompilation(compilationDto);
     }
@@ -29,7 +29,7 @@ public class AdminCompilationController {
     @ResponseStatus(HttpStatus.NO_CONTENT) // 204
     @DeleteMapping("/{compId}")
     void deleteCompilationById(@PathVariable Long compId) {
-        log.info("DeleteMapping: deleteCompilationById compId = {}", compId);
+        log.info("@DeleteMapping: deleteCompilationById compId = {}", compId);
 
         compilationService.deleteCompilationById(compId);
     }
@@ -38,7 +38,7 @@ public class AdminCompilationController {
     public CompilationDto updateCompilationById(
             @PathVariable Long compId,
             @Valid @RequestBody UpdateCompilationRequest updateComp) {
-        log.info("DeleteMapping: updateCompilationById compId = {}, UpdateCompilationRequest = {}",
+        log.info("@PatchMapping: updateCompilationById compId = {}, UpdateCompilationRequest = {}",
                 compId, updateComp);
 
         return compilationService.updateCompilationById(compId, updateComp);
