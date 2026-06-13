@@ -125,16 +125,23 @@ public class UserEventService {
         return eventMapper.toEventFullDto(eventRepository.save(existingEvent));
     }
 
-    public ParticipationRequestDto getRequestByUserIdAndEventId(Long userId, Long eventId) {
+    public List<ParticipationRequestDto> getRequestByUserIdAndEventId(Long userId, Long eventId) {
         userService.getUserById(userId);
 
-        eventRepository.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.formatted(eventId)));
 
-        Request request = requestRepository.getRequestByUserIdAndEventId(userId, eventId);
-        log.info("getRequestByUserIdAndEventId userId = {}, eventId = {}: {}", userId, eventId, request);
+        if (!event.getInitiator().getId().equals(userId)) {
+            throw new DataIntegrityViolationException("User is not the initiator of this event");
+        }
 
-        return requestMapper.toRequestDto(request);
+        List<Request> request = requestRepository.findAllByEventId(eventId);
+        log.info("findAllByEventId eventId = {}: {}", eventId, request);
+       // log.info("getRequestByUserIdAndEventId userId = {}, eventId = {}: {}", userId, eventId, request);
+
+        return request.stream()
+                .map(requestMapper::toRequestDto)
+                .toList();
     }
 
 
@@ -165,7 +172,9 @@ public class UserEventService {
         }
 
         //  нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
-        if (existingEvent.getParticipantLimit() >= existingEvent.getConfirmedRequests()) {
+        if (existingEvent.getParticipantLimit() <= existingEvent.getConfirmedRequests()) {
+            log.info("existingEvent = {}, existingEvent.getParticipantLimit() = {}, existingEvent.getConfirmedRequests() = {}",
+                    existingEvent, existingEvent.getParticipantLimit(), existingEvent.getConfirmedRequests());
             throw new ConflictException("The participant limit has been reached");
         }
 

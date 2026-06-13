@@ -3,7 +3,6 @@ package ru.practicum.event.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,6 @@ import ru.practicum.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -122,12 +120,10 @@ public class AdminEventService {
 
         Pageable pageable = PageRequest.of(from / size, size);
 
-        Page<Event> eventsPage = eventRepository.getEventsByAdmin(
-                finalUsers, finalStates, finalCategories, rangeStart, rangeEnd, pageable);
+        List<Event> events = eventRepository.getEventsByAdmin(
+                finalUsers, finalStates, finalCategories, rangeStart, rangeEnd, pageable).getContent();
 
-        return eventsPage.getContent().stream()
-                .map(eventMapper::toEventFullDto)
-                .collect(Collectors.toList());
+        return eventMapper.toEventFullDtoList(events);
     }
 
     public List<EventFullDto> getAllEvents() {

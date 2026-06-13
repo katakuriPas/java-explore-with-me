@@ -58,10 +58,10 @@ public class UserEventController {
     }
 
     @GetMapping("/{eventId}/requests")
-    public ParticipationRequestDto getRequestByEventIdAndEventId(
+    public List<ParticipationRequestDto> getRequestByEventIdAndEventId(
             @PathVariable Long userId,
             @PathVariable Long eventId) {
-        log.info("GetMapping: getRequestByEventIdAndRequestId userId = {}, eventId = {})", userId, eventId);
+        log.info("GetMapping: getRequestByUserIdAndEventId userId = {}, eventId = {})", userId, eventId);
 
         return userEventService.getRequestByUserIdAndEventId(userId, eventId);
     }

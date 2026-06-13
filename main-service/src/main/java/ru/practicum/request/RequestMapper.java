@@ -9,5 +9,6 @@ public interface RequestMapper {
 
     @Mapping(target = "event", source = "event.id")
     @Mapping(target = "requester", source = "requester.id")
+    @Mapping(target = "created", source = "created")
     ParticipationRequestDto toRequestDto(Request request);
 }

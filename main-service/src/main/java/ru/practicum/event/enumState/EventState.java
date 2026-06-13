@@ -4,5 +4,4 @@ public enum EventState {
     PENDING,    // Ожидается
     PUBLISHED,  // Опубликовано
     CANCELED    // Отменено
-
 }

@@ -40,7 +40,7 @@ public abstract class EventMapper {
 
     public abstract List<EventShortDto> toEventShortDtoList(List<Event> events);
 
-    abstract List<EventFullDto> toEventFullDtoList(List<Event> events);
+    public abstract List<EventFullDto> toEventFullDtoList(List<Event> events);
 
     @AfterMapping
     protected void enrichSingleFullDto(@MappingTarget EventFullDto dto, Event event) {

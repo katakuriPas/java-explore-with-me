@@ -42,9 +42,7 @@ public class PublicEventService {
 
         statsManager.sendHit(request);
 
-        EventFullDto eventFullDto = eventMapper.toEventFullDto(event);
-
-        return eventFullDto;
+        return eventMapper.toEventFullDto(event);
     }
 
     public List<EventShortDto> getEventsWithFilter(

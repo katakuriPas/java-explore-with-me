@@ -27,6 +27,8 @@ public abstract class CompilationMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "events", source = "events")
+    @Mapping(target = "title", source = "title")
+    @Mapping(target = "pinned", source = "pinned")
     public abstract void updateCompilation(UpdateCompilationRequest updateComp, @MappingTarget Compilation comp);
 
     protected List<Event> mapIdsToEvents(List<Long> eventIds) {
