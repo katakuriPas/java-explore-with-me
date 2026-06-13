@@ -2,6 +2,8 @@ package ru.practicum.compilation.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.compilation.CompilationMapper;
 import ru.practicum.compilation.dto.CompilationDto;
@@ -34,7 +36,7 @@ public class PublicCompilationService {
     public List<CompilationDto> getCompilations() {
         List<Compilation> comps = compRepository.findAll();
 
-        List<CompilationDto> compDtos =  new ArrayList<>(comps.size());
+        List<CompilationDto> compDtos = new ArrayList<>(comps.size());
         for (Compilation comp : comps) {
             CompilationDto compDto = compMapper.toCompilationDto(comp);
 
@@ -42,5 +44,15 @@ public class PublicCompilationService {
         }
 
         return compDtos;
+    }
+
+    public List<CompilationDto> getCompilations(int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+
+        List<Compilation> comp = compRepository.findAll(pageable).getContent();
+
+        return comp.stream()
+                .map(compMapper::toCompilationDto)
+                .toList();
     }
 }

@@ -66,19 +66,21 @@ public class PublicEventService {
         }
 
         Pageable pageable = PageRequest.of(from / size, size);
+
         if ("EVENT_DATE".equalsIgnoreCase(sort)) {
             pageable = PageRequest.of(from / size, size, Sort.by("eventDate").ascending());
         }
 
-        Page<Event> eventsPage = eventRepository.getEventsWithFilter(
+        Page<Event> eventPage = eventRepository.getEventsWithFilter(
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable);
 
-        List<Event> events = eventsPage.getContent();
+        List<Event> events = eventPage.getContent();
+
         if (events.isEmpty()) {
             return List.of();
         }
 
-        //statsManager.sendHit(request);
+        statsManager.sendHit(request);
 
         List<EventShortDto> eventShortDtos = eventMapper.toEventShortDtoList(events);
 
@@ -90,4 +92,5 @@ public class PublicEventService {
 
         return eventShortDtos;
     }
+
 }

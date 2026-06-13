@@ -132,6 +132,7 @@ public class UserEventService {
                 .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.formatted(eventId)));
 
         Request request = requestRepository.getRequestByUserIdAndEventId(userId, eventId);
+        log.info("getRequestByUserIdAndEventId userId = {}, eventId = {}: {}", userId, eventId, request);
 
         return requestMapper.toRequestDto(request);
     }
@@ -141,6 +142,11 @@ public class UserEventService {
             Long userId,
             Long eventId,
             EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
+
+        if (eventRequestStatusUpdateRequest == null) {
+            throw new DataIntegrityViolationException("eventRequestStatusUpdateRequest: " +
+                    "The request body cannot be empty  ");
+        }
 
         Event existingEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.formatted(eventId)));

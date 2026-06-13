@@ -50,10 +50,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND (CAST(:end AS timestamp) IS NULL OR e.eventDate <= :end) " +
             "AND (:onlyAvailable = false OR e.participantLimit = 0 OR e.confirmedRequests < e.participantLimit)")
     Page<Event> getEventsWithFilter(@Param("text") String text,
-                                           @Param("categories") List<Long> categories,
-                                           @Param("paid") boolean paid,
-                                           @Param("start") LocalDateTime start,
-                                           @Param("end") LocalDateTime end,
-                                           @Param("onlyAvailable") boolean onlyAvailable,
-                                           Pageable pageable);
+                                    @Param("categories") List<Long> categories,
+                                    @Param("paid") Boolean paid,
+                                    @Param("start") LocalDateTime start,
+                                    @Param("end") LocalDateTime end,
+                                    @Param("onlyAvailable") Boolean onlyAvailable,
+                                    Pageable pageable);
 }

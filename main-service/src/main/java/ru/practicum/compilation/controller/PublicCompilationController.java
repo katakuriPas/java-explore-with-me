@@ -24,9 +24,11 @@ public class PublicCompilationController {
     }
 
     @GetMapping
-    public List<CompilationDto> getCompilations() {
-        log.info("GetMapping: getCompilations");
+    public List<CompilationDto> getCompilations(
+            @RequestParam(name = "from", defaultValue = "0") int from,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        log.info("GetMapping: getCompilations from = {}, size = {}", from, size);
 
-        return publicCompService.getCompilations();
+        return publicCompService.getCompilations(from, size);
     }
 }

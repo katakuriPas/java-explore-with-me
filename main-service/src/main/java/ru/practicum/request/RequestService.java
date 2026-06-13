@@ -56,7 +56,7 @@ public class RequestService {
         }
 
         // нельзя участвовать в неопубликованном событии (Ожидается код ошибки 409)
-        if (existingEvent.getState() == EventState.PENDING) {
+        if (existingEvent.getState() != EventState.PUBLISHED) {
             log.error("RequestService: createRequest(Long userId = {}, Long eventId = {}) " +
                     "- You cannot participate in an unpublished event.", userId, eventId);
 
@@ -64,12 +64,14 @@ public class RequestService {
         }
 
         // если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
-        if (Objects.equals(existingEvent.getParticipantLimit(), existingEvent.getConfirmedRequests())
-                && existingEvent.getParticipantLimit() != 0) {
-            log.error("RequestService: createRequest(Long userId = {}, Long eventId = {}) " +
-                    "- The participation request limit has been reached", userId, eventId);
+        if (existingEvent.getParticipantLimit() > 0) {
+            long confirmedRequests = existingEvent.getConfirmedRequests();
+            if (confirmedRequests >= existingEvent.getParticipantLimit()) {
+                log.error("RequestService: createRequest(Long userId = {}, Long eventId = {}) " +
+                        "- The participation request limit has been reached", userId, eventId);
 
-            throw new DataIntegrityViolationException("The participation request limit has been reached");
+                throw new DataIntegrityViolationException("The participation request limit has been reached");
+            }
         }
 
         Request newRequest = new Request();
@@ -81,9 +83,18 @@ public class RequestService {
         // то запрос должен автоматически перейти в состояние подтвержденного
         if (!existingEvent.getRequestModeration() || existingEvent.getParticipantLimit() == 0) {
             newRequest.setStatus(RequestStatus.CONFIRMED);
-        } else newRequest.setStatus(RequestStatus.PENDING);
+        } else {
+            newRequest.setStatus(RequestStatus.PENDING);
+        }
 
-        return requestMapper.toRequestDto(requestRepository.save(newRequest));
+        Request savedRequest = requestRepository.save(newRequest);
+
+        if (savedRequest.getStatus() == RequestStatus.CONFIRMED) {
+            existingEvent.setConfirmedRequests(existingEvent.getConfirmedRequests() + 1);
+            eventRepository.save(existingEvent);
+        }
+
+        return requestMapper.toRequestDto(savedRequest);
     }
 
     public List<ParticipationRequestDto> getRequestsByUser(Long userId) {
@@ -104,7 +115,7 @@ public class RequestService {
 
         Request existingRequest = requestRepository.findByUserIdAndRequestId(userId, requestId);
 
-        existingRequest.setStatus(RequestStatus.REJECTED);
+        existingRequest.setStatus(RequestStatus.CANCELED);
 
         return requestMapper.toRequestDto(requestRepository.save(existingRequest));
     }

@@ -58,7 +58,7 @@ public class UserEventController {
     }
 
     @GetMapping("/{eventId}/requests")
-    public ParticipationRequestDto getRequestByEventIdAndRequestId(
+    public ParticipationRequestDto getRequestByEventIdAndEventId(
             @PathVariable Long userId,
             @PathVariable Long eventId) {
         log.info("GetMapping: getRequestByEventIdAndRequestId userId = {}, eventId = {})", userId, eventId);
@@ -83,7 +83,7 @@ public class UserEventController {
     public EventRequestStatusUpdateResult updateEventRequestStatus(
             @PathVariable Long userId,
             @PathVariable Long eventId,
-            @RequestBody EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
+            @RequestBody(required = false) EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
         log.info("@PatchMapping: " +
                 "updateEventRequestStatus" +
                 "userId = {}, " +
