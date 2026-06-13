@@ -46,13 +46,13 @@ public class StatsManager {
     }
 
     //  Получение списка ViewStatsDto для одного конкретного события
-    public List<ViewStatsDto> getStatsListForSingleEvent(String uri, LocalDateTime publishedOn) {
-        if (publishedOn == null) {
+    public List<ViewStatsDto> getStatsListForSingleEvent(String uri, LocalDateTime createdOn) {
+        if (createdOn == null) {
             return List.of();
         }
         try {
             ResponseEntity<Object> response = statsClient.getStats(
-                    publishedOn.format(formatter),
+                    createdOn.format(formatter),
                     LocalDateTime.now().format(formatter),
                     List.of(uri),
                     false
@@ -76,7 +76,7 @@ public class StatsManager {
         }
 
         LocalDateTime minPublished = events.stream()
-                .map(Event::getPublishedOn)
+                .map(Event::getCreatedOn)
                 .filter(Objects::nonNull)
                 .min(LocalDateTime::compareTo)
                 .orElse(LocalDateTime.now().minusDays(1));
@@ -88,7 +88,7 @@ public class StatsManager {
         try {
             ResponseEntity<Object> response = statsClient.getStats(
                     minPublished.format(formatter),
-                    LocalDateTime.now().format(formatter),
+                    LocalDateTime.now().plusSeconds(1).format(formatter),
                     uris,
                     false
             );

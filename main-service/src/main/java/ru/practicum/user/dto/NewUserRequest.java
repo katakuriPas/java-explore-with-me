@@ -1,6 +1,7 @@
 package ru.practicum.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,8 @@ public class NewUserRequest {
     private String name;
 
     @NotBlank
-    @Size(min = 3, max = 254, message = "Email должен быть от 3 до 254 символов")
+    @Pattern(regexp = "^[^@]{1,64}@([a-zA-Z0-9-]{1,63}\\.)+[a-zA-Z]{2,6}$",
+            message = "Некорректный формат email или превышена длина его частей")
+    @Size(max = 254, message = "Email должен превышать 254 символов")
     private String email;
 }

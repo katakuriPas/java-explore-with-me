@@ -42,7 +42,9 @@ public class PublicEventService {
 
         statsManager.sendHit(request);
 
-        return eventMapper.toEventFullDto(event);
+        EventFullDto eventFullDto = eventMapper.toEventFullDto(event);
+
+        return eventFullDto;
     }
 
     public List<EventShortDto> getEventsWithFilter(
@@ -51,7 +53,7 @@ public class PublicEventService {
             Boolean paid,
             LocalDateTime rangeStart,
             LocalDateTime rangeEnd,
-            boolean onlyAvailable,
+            Boolean onlyAvailable,
             String sort,
             int from, int size, HttpServletRequest request) {
 
@@ -76,7 +78,7 @@ public class PublicEventService {
             return List.of();
         }
 
-        statsManager.sendHit(request);
+        //statsManager.sendHit(request);
 
         List<EventShortDto> eventShortDtos = eventMapper.toEventShortDtoList(events);
 

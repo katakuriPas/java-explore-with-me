@@ -8,7 +8,7 @@ import ru.practicum.user.dto.UserDto;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserDto toFullDtoEntity(User user);
+    UserDto toDto(User user);
 
     @Mapping(target = "id", ignore = true)
     User toEntity(NewUserRequest newUserRequest);

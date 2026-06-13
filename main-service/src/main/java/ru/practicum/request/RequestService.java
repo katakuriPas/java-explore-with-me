@@ -64,7 +64,8 @@ public class RequestService {
         }
 
         // если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
-        if (Objects.equals(existingEvent.getParticipantLimit(), existingEvent.getConfirmedRequests())) {
+        if (Objects.equals(existingEvent.getParticipantLimit(), existingEvent.getConfirmedRequests())
+                && existingEvent.getParticipantLimit() != 0) {
             log.error("RequestService: createRequest(Long userId = {}, Long eventId = {}) " +
                     "- The participation request limit has been reached", userId, eventId);
 

@@ -38,7 +38,7 @@ public class UpdateEventAdminRequest {
 
     private Boolean requestModeration; // (example: true, default: true) Нужна ли пре-модерация заявок на участие
 
-    private String stateAction; // (ENUM: SEND_TO_REVIEW, CANCEL_REVIEW) Изменение состояния события
+    private String stateAction; // (ENUM: PUBLISH_EVENT, REJECT_EVENT) Изменение состояния события
 
     @Size(min = 3, max = 120)
     private String title; // Заголовок

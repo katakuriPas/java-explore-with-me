@@ -1,6 +1,8 @@
 package ru.practicum.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -38,14 +40,18 @@ public class NewEventDto {
     private Location location; // Широта и долгота места проведения события
 
     @NotNull
-    private Boolean paid; // Нужно ли оплачивать участие
+    @JsonSetter(nulls = Nulls.SKIP)
+    @Builder.Default
+    private Boolean paid = false; // Нужно ли оплачивать участие
 
     // Ограничение на количество участников.
     // Значение 0 - означает отсутствие ограничения example: 10 default: 0
     @PositiveOrZero
+    @JsonSetter(nulls = Nulls.SKIP)
     @Builder.Default
     private Long participantLimit = 0L;
 
+    @JsonSetter(nulls = Nulls.SKIP)
     @Builder.Default
     private Boolean requestModeration = true; // (example: true, default: true) Нужна ли пре-модерация заявок на участие
 

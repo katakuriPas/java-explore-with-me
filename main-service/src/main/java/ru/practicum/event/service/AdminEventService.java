@@ -2,6 +2,7 @@ package ru.practicum.event.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,6 @@ import ru.practicum.event.enumState.EventState;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.UpdateEventAdminRequest;
 import ru.practicum.exception.BadRequestException;
-import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.location.Location;
 import ru.practicum.location.LocationRepository;
@@ -43,15 +43,6 @@ public class AdminEventService {
         Event existingEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.formatted(eventId)));
 
-        //  Дата начала изменяемого события должна быть не ранее чем за час от даты публикации.
-        //  (Ожидается код ошибки 409)
-        if (updateEvent.getEventDate() != null
-                && updateEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-            throw new ConflictException(
-                    "The start date of the event being modified " +
-                            "must be no earlier than one hour from the publication date");
-        }
-
         //  Событие можно публиковать, только если оно в состоянии ожидания публикации
         //  Событие можно отклонить, только если оно еще не опубликовано
         //  (Ожидается код ошибки 409)
@@ -60,14 +51,14 @@ public class AdminEventService {
 
             if ("PUBLISH_EVENT".equals(action)) {
                 if (existingEvent.getState() != EventState.PENDING) {
-                    throw new ConflictException(
+                    throw new DataIntegrityViolationException(
                             "An event can only be published if it is in the pending publishing state");
                 }
                 existingEvent.setState(EventState.PUBLISHED);
                 existingEvent.setPublishedOn(LocalDateTime.now());
             } else if ("REJECT_EVENT".equals(action)) {
                 if (existingEvent.getState() == EventState.PUBLISHED) {
-                    throw new ConflictException(
+                    throw new DataIntegrityViolationException(
                             "An event can only be declined if it has not yet been published");
                 }
                 existingEvent.setState(EventState.CANCELED);
@@ -75,6 +66,15 @@ public class AdminEventService {
         }
 
         eventMapper.updateEventAdmin(updateEvent, existingEvent);
+
+        //  Дата начала изменяемого события должна быть не ранее чем за час от даты публикации.
+        //  (Ожидается код ошибки 409)
+        if (updateEvent.getEventDate() != null
+                && updateEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+            throw new BadRequestException(
+                    "The start date of the event being modified " +
+                            "must be no earlier than one hour from the publication date");
+        }
 
         Long categoryUpdateId = updateEvent.getCategory();
         if (categoryUpdateId != null) {

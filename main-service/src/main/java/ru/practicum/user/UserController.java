@@ -27,14 +27,16 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getUsers(
-            @RequestParam(name = "from", defaultValue = "0") Long from,
-            @RequestParam(name = "size", defaultValue = "10") Long size
+            @RequestParam(required = false) List<Long> ids,
+            @RequestParam(name = "from", defaultValue = "0") int from,
+            @RequestParam(name = "size", defaultValue = "10") int size
     ) {
-        log.info("@GetMapping: getUser from = {}, size = {})", from, size);
-        return userService.getUsersFromAndSize(from, size);
+        log.info("@GetMapping: getUser  ids = {}, from = {}, size = {})", ids, from, size);
+        return userService.getUsers(ids ,from, size);
     }
 
     @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204
     public void deleteUser(@PathVariable Long userId) {
         log.info("DeleteMapping(\"/{userId}\"): deleteUser userId = {}", userId);
         userService.deleteUser(userId);

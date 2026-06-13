@@ -33,10 +33,10 @@ public class PublicEventController {
     public List<EventShortDto> getEventsWithFilter(
             @RequestParam(required = false) String text,
             @RequestParam(required = false) List<Long> categories,
-            @RequestParam(required = false) Boolean paid,
+            @RequestParam(defaultValue = "false") Boolean paid,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-            @RequestParam(defaultValue = "false") boolean onlyAvailable,
+            @RequestParam(defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(required = false) String sort,
             @RequestParam(name = "from", defaultValue = "0") int from,
             @RequestParam(name = "size", defaultValue = "10") int size,

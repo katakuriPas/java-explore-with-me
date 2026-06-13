@@ -3,6 +3,7 @@ package ru.practicum.event.service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
@@ -74,7 +75,7 @@ public class UserEventService {
 
         List<Event> events = eventRepository.getEvetByUserFromAndSize(userId, from, size);
 
-        statsManager.sendHit(request);
+        //statsManager.sendHit(request);
 
         return events.stream()
                 .map(eventMapper::toEventShortDto)
@@ -86,7 +87,7 @@ public class UserEventService {
 
         Event event = eventRepository.getEvetByUser(userId, eventId);
 
-        statsManager.sendHit(request);
+        //statsManager.sendHit(request);
 
         return eventMapper.toEventFullDto(event);
     }
@@ -96,11 +97,11 @@ public class UserEventService {
                 .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.formatted(eventId)));
 
         if (!existingEvent.getInitiator().getId().equals(userId)) {
-            throw new ConflictException("The user with id=" + userId + " is not the initiator of this event");
+            throw new DataIntegrityViolationException("The user with id=" + userId + " is not the initiator of this event");
         }
 
         if (existingEvent.getState() == EventState.PUBLISHED) {
-            throw new ConflictException("The item cannot be edited because it is already published");
+            throw new DataIntegrityViolationException("The item cannot be edited because it is already published");
         }
 
         if (updateEvent.getEventDate() != null

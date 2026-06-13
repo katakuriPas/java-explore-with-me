@@ -82,14 +82,16 @@ public class ErrorHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleDataIntegrityViolationException(final DataIntegrityViolationException e) {
-        String databaseErrorMessage = e.getMostSpecificCause().getMessage();
+        // Безопасное получение сообщения: если специфика нет, берем корневое сообщение
+        String databaseErrorMessage = e.getMostSpecificCause() != null
+                ? e.getMostSpecificCause().getMessage()
+                : e.getMessage();
 
         List<String> errors = Arrays.stream(e.getStackTrace())
                 .map(StackTraceElement::toString)
                 .collect(Collectors.toList());
 
         return ApiError.builder()
-                //.errors(Collections.emptyList())
                 .errors(errors)
                 .message(databaseErrorMessage)
                 .reason("Integrity constraint has been violated.")

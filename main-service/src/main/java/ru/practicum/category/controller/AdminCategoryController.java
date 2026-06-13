@@ -1,10 +1,11 @@
-package ru.practicum.category;
+package ru.practicum.category.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.category.CategoryService;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.NewCategoryDto;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/categories")
-public class CategoryController {
+public class AdminCategoryController {
 
     private final CategoryService categoryService;
 
@@ -26,29 +27,9 @@ public class CategoryController {
         return categoryService.createCategory(newDto);
     }
 
-    // --- GET ---
-    @GetMapping("/{catId}")
-    public CategoryDto getCategoryDtoById(@PathVariable Long catId) {
-        log.info("GetMapping(\"/{catId}\"): getCategoryById catId = {}", catId);
-        return categoryService.getCategoryDtoById(catId);
-    }
-
-    @GetMapping("/all")
-    public List<CategoryDto> findAllCategory() {
-        return categoryService.findAllCategory();
-    }
-
-    @GetMapping
-    public List<CategoryDto> getCategoriesFromAndSize(
-            @RequestParam(name = "from", defaultValue = "0") Long from,
-            @RequestParam(name = "size", defaultValue = "10") Long size
-    ) {
-        log.info("@GetMapping: getUser from = {}, size = {})", from, size);
-        return categoryService.getCategoriesFromAndSize(from, size);
-    }
-
     // --- DELETE ---
     @DeleteMapping("/{catId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204
     public void deleteUser(@PathVariable Long catId) {
         log.info("DeleteMapping(\"/{catId}\"): deleteUser catId = {}", catId);
         categoryService.deleteCategory(catId);
