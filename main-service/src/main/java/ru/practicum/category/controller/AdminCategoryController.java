@@ -9,8 +9,6 @@ import ru.practicum.category.CategoryService;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.NewCategoryDto;
 
-import java.util.List;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor

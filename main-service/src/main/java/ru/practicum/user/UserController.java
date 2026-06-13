@@ -32,7 +32,7 @@ public class UserController {
             @RequestParam(name = "size", defaultValue = "10") int size
     ) {
         log.info("@GetMapping: getUser  ids = {}, from = {}, size = {})", ids, from, size);
-        return userService.getUsers(ids ,from, size);
+        return userService.getUsers(ids, from, size);
     }
 
     @DeleteMapping("/{userId}")
