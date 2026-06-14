@@ -8,7 +8,6 @@ import ru.practicum.category.dto.NewCategoryDto;
 @Mapper(componentModel = "spring")
 public interface CategoryMapping {
 
-
     @Mapping(target = "id", ignore = true)
     Category toEntity(NewCategoryDto newCategoryDto);
 

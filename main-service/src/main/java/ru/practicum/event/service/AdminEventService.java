@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.CategoryService;
 import ru.practicum.event.EventMapper;
 import ru.practicum.event.EventRepository;
@@ -37,6 +38,7 @@ public class AdminEventService {
 
     private final EventMapper eventMapper;
 
+    @Transactional
     public EventFullDto updateEventAdmin(Long eventId, UpdateEventAdminRequest updateEvent) {
         Event existingEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.formatted(eventId)));
@@ -84,7 +86,8 @@ public class AdminEventService {
             existingEvent.setLocation(locationRepository.save(newLocation));
         }
 
-        return eventMapper.toEventFullDto(eventRepository.save(existingEvent));
+        //return eventMapper.toEventFullDto(eventRepository.save(existingEvent));
+        return eventMapper.toEventFullDto(existingEvent);
     }
 
     public List<EventFullDto> getEventsByAdmin(

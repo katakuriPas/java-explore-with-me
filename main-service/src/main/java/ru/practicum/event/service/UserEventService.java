@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
 import ru.practicum.event.EventMapper;
@@ -53,6 +54,7 @@ public class UserEventService {
     private final EventMapper eventMapper;
     private final RequestMapper requestMapper;
 
+    @Transactional
     public EventFullDto createEvent(NewEventDto newEventDto, Long userId) {
         if (newEventDto.getEventDate() != null
                 && newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
@@ -92,6 +94,7 @@ public class UserEventService {
         return eventMapper.toEventFullDto(event);
     }
 
+    @Transactional
     public EventFullDto updateEvent(Long userId, Long eventId, UpdateEventUserRequest updateEvent) {
         Event existingEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.formatted(eventId)));
@@ -122,7 +125,8 @@ public class UserEventService {
             existingEvent.setLocation(locationRepository.save(newLocation));
         }
 
-        return eventMapper.toEventFullDto(eventRepository.save(existingEvent));
+        //return eventMapper.toEventFullDto(eventRepository.save(existingEvent));
+        return eventMapper.toEventFullDto(existingEvent);
     }
 
     public List<ParticipationRequestDto> getRequestByUserIdAndEventId(Long userId, Long eventId) {
@@ -144,7 +148,7 @@ public class UserEventService {
                 .toList();
     }
 
-
+    @Transactional
     public EventRequestStatusUpdateResult updateEventRequestStatus(
             Long userId,
             Long eventId,
@@ -218,7 +222,7 @@ public class UserEventService {
             }
         }
 
-        eventRepository.save(existingEvent);
+        //eventRepository.save(existingEvent);
 
         return EventRequestStatusUpdateResult.builder()
                 .confirmedRequests(confirmedRequests)

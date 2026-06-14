@@ -21,7 +21,7 @@ public class AdminCategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto createCategory(@Valid @RequestBody NewCategoryDto newDto) {
-        log.info("PostMapping: createCategory NewCategoryDto = {}", newDto);
+        log.info("@PostMapping: createCategory NewCategoryDto = {}", newDto);
         return categoryService.createCategory(newDto);
     }
 
@@ -29,7 +29,7 @@ public class AdminCategoryController {
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT) // 204
     public void deleteUser(@PathVariable Long catId) {
-        log.info("DeleteMapping(\"/{catId}\"): deleteUser catId = {}", catId);
+        log.info("@DeleteMapping: deleteUser catId = {}", catId);
         categoryService.deleteCategory(catId);
     }
 
@@ -37,7 +37,7 @@ public class AdminCategoryController {
     @PatchMapping("/{catId}")
     public CategoryDto patchCategory(@PathVariable Long catId,
                                      @Valid @RequestBody CategoryDto dto) {
-        log.info("PatchMapping(\"/{catId}\"): patchCategory catId = {}, dto = {}", catId, dto);
+        log.info("@PatchMapping: patchCategory catId = {}, dto = {}", catId, dto);
         return categoryService.patchCategory(catId, dto);
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.exception.NotFoundException;
@@ -19,6 +20,7 @@ public class CategoryService {
     private final CategoryMapping mapping;
     private final CategoryRepository repository;
 
+    @Transactional
     public CategoryDto createCategory(NewCategoryDto newDto) {
         Category category = mapping.toEntity(newDto);
         if (repository.existsByName(category.getName())) {
@@ -35,6 +37,7 @@ public class CategoryService {
         return repository.findAllByOrderByIdAsc().stream().map(mapping::toDto).toList();
     }
 
+    @Transactional
     public void deleteCategory(Long catId) {
         if (!repository.existsById(catId)) {
             throw new NotFoundException(CATEGORY_NOT_FOUND.formatted(catId));
@@ -43,6 +46,7 @@ public class CategoryService {
         repository.deleteById(catId);
     }
 
+    @Transactional
     public CategoryDto patchCategory(Long catId, CategoryDto dto) {
         Category existingCategory = repository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(CATEGORY_NOT_FOUND.formatted(catId)));
@@ -53,9 +57,7 @@ public class CategoryService {
             existingCategory.setName(dto.getName());
         }
 
-        Category savedCategory = repository.save(existingCategory);
-
-        return mapping.toDto(savedCategory);
+        return mapping.toDto(existingCategory);
     }
 
     public CategoryDto getCategoryDtoById(Long catId) {
