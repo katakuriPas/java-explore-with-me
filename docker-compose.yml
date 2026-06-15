@@ -10,6 +10,7 @@ services:
     container_name: stats-server
     ports:
       - "9090:9090"
+    restart: on-failure # ЕСЛИ БАЗА НЕ ПОДНЯЛАСЬ, СЕРВИС ПРОСТО ПЕРЕЗАПУСТИТСЯ, А НЕ УПАДЕТ
     depends_on:
       - stats-db
     environment:
@@ -38,6 +39,7 @@ services:
     container_name: ewm-service
     ports:
       - "8080:8080"
+    restart: on-failure # АВТОПЕРЕЗАПУСК ПРИ ОШИБКЕ СОЕДИНЕНИЯ
     depends_on:
       - ewm-db
       - stats-server
