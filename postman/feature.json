@@ -3208,6 +3208,141 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Public controller",
+      "item": [
+        {
+          "name": "Поиск комментариев c @PathVariable Long eventId Copy",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "\r",
+                  "pm.test(\"Статус ответа 200 OK и данные в формате JSON\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.response.to.be.withBody;\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "const target = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Ответ возвращает массив комментариев\", function () {\r",
+                  "    pm.expect(target).to.be.an('array');\r",
+                  "    pm.expect(target.length).to.be.above(0); \r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Каждый комментарий содержит обязательные поля\", function () {\r",
+                  "    target.forEach(function (comment) {\r",
+                  "        pm.expect(comment).to.have.property('id');\r",
+                  "        pm.expect(comment).to.have.property('description');\r",
+                  "        pm.expect(comment).to.have.property('eventId');\r",
+                  "        pm.expect(comment).to.have.property('authorId');\r",
+                  "        pm.expect(comment).to.have.property('createdOn');\r",
+                  "        pm.expect(comment).to.have.property('status');\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Все комментарии в ответе соответствуют запрашиваемому eventId\", function () {\r",
+                  "\r",
+                  "    const path = pm.request.url.toString();\r",
+                  "    const match = path.match(/\\/events\\/(\\d+)/);\r",
+                  "    \r",
+                  "    pm.expect(match).to.not.be.null;\r",
+                  "    const expectedEventId = parseInt(match[1]);\r",
+                  "\r",
+                  "    target.forEach(function (comment) {\r",
+                  "        pm.expect(comment.eventId).to.equal(expectedEventId, `Комментарий с id ${comment.id} имеет неверный eventId`);\r",
+                  "    });\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/events/:eventId/comments?userId=&status=&isNew=&rangeStart=&rangeEnd=&from=&size=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "events",
+                ":eventId",
+                "comments"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "",
+                  "description": "автор комментария"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "список статусов для поиска"
+                },
+                {
+                  "key": "isNew",
+                  "value": "",
+                  "description": "новые или старые"
+                },
+                {
+                  "key": "rangeStart",
+                  "value": "",
+                  "description": "дата и время не раньше которых должно произойти событие"
+                },
+                {
+                  "key": "rangeEnd",
+                  "value": "",
+                  "description": "дата и время не позже которых должно произойти событие"
+                },
+                {
+                  "key": "from",
+                  "value": "",
+                  "description": "количество событий, которые нужно пропустить для формирования текущего набора"
+                },
+                {
+                  "key": "size",
+                  "value": "",
+                  "description": "количество событий в наборе"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "eventId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия"
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "event": [

@@ -3,10 +3,7 @@ package ru.practicum.comments.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.comments.dto.CommentDto;
 import ru.practicum.comments.service.AdminCommentService;
 
@@ -16,11 +13,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("events/{eventId}/comments")
+@RequestMapping("/events/{eventId}/comments")
 public class PublicCommentController {
 
     private final AdminCommentService adminCommentService;
 
+    @GetMapping
     public List<CommentDto> getCommentsByEventId(
             @PathVariable Long eventId,
             @RequestParam(required = false) Long userId,
