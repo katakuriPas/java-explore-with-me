@@ -3,6 +3,7 @@ package ru.practicum.event;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.category.Category;
+import ru.practicum.comments.CommentMapper;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
@@ -16,7 +17,7 @@ import ru.practicum.user.User;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CommentMapper.class})
 public abstract class EventMapper {
 
     @Autowired
@@ -30,6 +31,7 @@ public abstract class EventMapper {
     @Mapping(target = "state", expression = "java(ru.practicum.event.enumState.EventState.PENDING)")
     @Mapping(target = "createdOn", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "publishedOn", ignore = true)
+    @Mapping(target = "comments", ignore = true)
     public abstract Event toEvent(NewEventDto newEventDto, Category category, User initiator, Location location);
 
     @Mapping(target = "views", ignore = true)
@@ -74,6 +76,7 @@ public abstract class EventMapper {
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "initiator", ignore = true)
     @Mapping(target = "publishedOn", ignore = true)
+    @Mapping(target = "comments", ignore = true)
     @Mapping(target = "state",
             expression = "java(mapStateAction(updateEvent.getStateAction(), eventTarget.getState()))")
     public abstract void updateEvent(UpdateEventUserRequest updateEvent, @MappingTarget Event eventTarget);
@@ -98,6 +101,7 @@ public abstract class EventMapper {
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "initiator", ignore = true)
     @Mapping(target = "publishedOn", ignore = true)
+    @Mapping(target = "comments", ignore = true)
     @Mapping(target = "state",
             expression = "java(mapAdminStateAction(updateAdminEvent.getStateAction(), eventTarget.getState()))")
     public abstract void updateEventAdmin(UpdateEventAdminRequest updateAdminEvent, @MappingTarget Event eventTarget);
