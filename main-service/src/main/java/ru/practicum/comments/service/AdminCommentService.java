@@ -63,7 +63,7 @@ public class AdminCommentService {
         } else searchStatus = null;
 
 
-        log.info("ADMIN searchStatus = {}" , searchStatus);
+        log.info("ADMIN searchStatus = {}", searchStatus);
         Sort sort = (isNew != null && isNew)
                 ? Sort.by("createdOn").descending()
                 : Sort.by("createdOn").ascending();
