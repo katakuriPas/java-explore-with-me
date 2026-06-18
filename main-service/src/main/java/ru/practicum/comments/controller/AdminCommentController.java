@@ -107,8 +107,3 @@ public class AdminCommentController {
         adminCommentService.deleteCommentsByUserId(eventId, userId);
     }
 }
-
-
-
-
-

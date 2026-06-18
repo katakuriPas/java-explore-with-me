@@ -24,6 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class AdminCommentService {
     private final CommentRepository commentRepository;
 
@@ -62,7 +63,6 @@ public class AdminCommentService {
                     .toList();
         } else searchStatus = null;
 
-
         log.info("ADMIN searchStatus = {}", searchStatus);
         Sort sort = (isNew != null && isNew)
                 ? Sort.by("createdOn").descending()
@@ -90,6 +90,7 @@ public class AdminCommentService {
         return commentMapper.toCommentDto(existingComment);
     }
 
+    @Transactional
     public CommentDto updateCommentStatusByAdmin(Long commentId, UpdateCommentAdminRequest updateComment) {
         Comment existingComment = userCommentService.getComponentEntityById(commentId);
 
@@ -132,6 +133,5 @@ public class AdminCommentService {
             throw new NotFoundException("Пользователь не писал комментариев под данным событием");
         }
         log.info("Comments(eventId = {}, userId = {}) deleted", eventId, userId);
-
     }
 }
