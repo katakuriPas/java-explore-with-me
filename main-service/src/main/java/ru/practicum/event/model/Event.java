@@ -1,20 +1,20 @@
 package ru.practicum.event.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.category.Category;
+import ru.practicum.comments.model.Comment;
 import ru.practicum.event.enumState.EventState;
 import ru.practicum.location.Location;
 import ru.practicum.user.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "events")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -75,4 +75,7 @@ public class Event {
 
     @Column(name = "title", length = 150, nullable = false)
     private String title; // Заголовок
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comment> comments;
 }

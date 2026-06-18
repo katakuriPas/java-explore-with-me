@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.category.dto.CategoryDto;
+import ru.practicum.comments.dto.CommentShortDto;
 import ru.practicum.event.enumState.EventState;
 import ru.practicum.location.LocationDto;
 import ru.practicum.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -56,4 +58,6 @@ public class EventFullDto {
     private String title; // Заголовок
 
     private Long views; // Количество просмотрев события
+
+    private List<CommentShortDto> comments;
 }

@@ -229,4 +229,9 @@ public class UserEventService {
                 .rejectedRequests(rejectedRequests)
                 .build();
     }
+
+    public Event getEventEntityById(Long eventId) {
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.formatted(eventId)));
+    }
 }
